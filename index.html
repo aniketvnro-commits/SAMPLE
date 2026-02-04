@@ -98,8 +98,8 @@
             transition: all 0.4s ease;
             pointer-events: none;
         }
-        .tech-card::before { top: 10px; left: 10px; border-top: 1px solid; border-left: 1px solid; }
-        .tech-card::after { bottom: 10px; right: 10px; border-bottom: 1px solid; border-right: 1px solid; }
+        .tech-card::before { top: 10px; left: 10px; border-top: 1.5px solid; border-left: 1.5px solid; }
+        .tech-card::after { bottom: 10px; right: 10px; border-bottom: 1.5px solid; border-right: 1.5px solid; }
         .tech-card:hover { border-color: rgba(16, 185, 129, 0.3); background: rgba(255, 255, 255, 0.03); }
 
         .hero-title {
@@ -109,39 +109,26 @@
             letter-spacing: -0.04em;
         }
 
-        /* --- VERTICAL CAROUSEL (RESPONSIVE HUD) --- */
-        .carousel-wrapper {
-            height: 120px;
+        /* --- DROPDOWN ANIMATIONS --- */
+        .dropdown-menu {
+            opacity: 0;
+            transform: translateY(-10px);
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .dropdown-menu.active {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        .sub-menu {
+            max-height: 0;
             overflow: hidden;
-            position: relative;
+            transition: max-height 0.4s ease-out;
         }
-
-        .carousel-container {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
-            will-change: transform;
-        }
-
-        .carousel-item {
-            flex: 0 0 120px;
-            width: 100%;
-            transition: opacity 0.5s ease, transform 0.5s ease;
-        }
-
-        .carousel-item.active { opacity: 1; transform: translateX(0); }
-        .carousel-item.inactive { opacity: 0.3; transform: translateX(10px); }
-
-        .tab-btn {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: pointer;
-        }
-        .tab-btn.active {
-            background: rgba(16, 185, 129, 0.08);
-            border-color: var(--neon-green);
-            color: var(--neon-green);
-            box-shadow: 0 0 30px rgba(16, 185, 129, 0.1);
+        .sub-menu.active {
+            max-height: 400px;
         }
 
         /* --- MODAL STYLES --- */
@@ -158,7 +145,7 @@
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.4s ease;
-            padding: 1.5rem;
+            padding: 1rem;
         }
         .modal-overlay.active {
             opacity: 1;
@@ -168,11 +155,51 @@
             transform: scale(0.9);
             transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             max-height: 90vh;
-            overflow-y: auto;
+            overflow: hidden; 
         }
         .modal-overlay.active .modal-content {
             transform: scale(1);
         }
+
+        /* Custom Scrollbar for Personnel Modal */
+        .personnel-grid::-webkit-scrollbar {
+            width: 4px;
+        }
+        .personnel-grid::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .personnel-grid::-webkit-scrollbar-thumb {
+            background: var(--neon-green);
+            border-radius: 10px;
+        }
+
+        .profile-img-glow {
+            box-shadow: 0 0 40px rgba(16, 185, 129, 0.2);
+        }
+
+        /* --- VERTICAL CAROUSEL (RE-INTEGRATED UPWARD MOTION) --- */
+        .carousel-wrapper {
+            height: 120px;
+            overflow: hidden;
+            position: relative;
+        }
+        .carousel-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+            will-change: transform;
+        }
+        .carousel-item {
+            flex: 0 0 120px;
+            width: 100%;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .carousel-item.active { opacity: 1; transform: translateX(0); }
+        .carousel-item.inactive { opacity: 0.2; transform: translateX(10px); }
 
     </style>
 </head>
@@ -184,7 +211,177 @@
         <div class="nebula-cloud cloud-2" id="neb-2"></div>
     </div>
 
-    <!-- Protocol Modal -->
+    <!-- Mentors Network Modal -->
+    <div id="mentors-modal" class="modal-overlay">
+        <div class="modal-content glass p-1 rounded-[2.5rem] md:rounded-[3.5rem] border border-emerald-500/30 w-full max-w-5xl overflow-hidden">
+            <div class="bg-slate-900/70 p-6 md:p-12 rounded-[2.3rem] md:rounded-[3.3rem]">
+                <div class="flex justify-between items-start mb-10 border-b border-white/5 pb-8">
+                    <div>
+                        <div class="text-[9px] md:text-[11px] mono text-emerald-500/60 tracking-[0.5em] mb-2 uppercase font-bold text-nowrap">Network_Protocol_Omega</div>
+                        <h2 class="text-3xl md:text-5xl font-black uppercase tracking-tight text-white text-nowrap">Mentor Network</h2>
+                    </div>
+                    <button onclick="closeMentorsModal()" class="p-3 glass rounded-full hover:bg-white/10 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-slate-400"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-h-[55vh] overflow-y-auto pr-2 personnel-grid">
+                    <div class="glass p-6 rounded-2xl border border-white/5"><div class="text-[8px] mono text-emerald-400 font-bold uppercase tracking-widest mb-4">Inventory Team</div><div class="text-lg font-bold text-white uppercase tracking-wide">Jaya Satheesh</div></div>
+                    <div class="glass p-6 rounded-2xl border border-white/5"><div class="text-[8px] mono text-emerald-400 font-bold uppercase tracking-widest mb-4">Production Team</div><div class="flex flex-col gap-1 text-sm font-semibold text-slate-300 uppercase"><span>Aravind B L</span><span>Hemlata</span><span>Kannan Das S</span><span>Shila devi</span><span>Divya R</span><span>Remya R</span><span>Pratibha</span><span>Pinky VAISHNAV</span></div></div>
+                    <div class="glass p-6 rounded-2xl border border-white/5"><div class="text-[8px] mono text-emerald-400 font-bold uppercase tracking-widest mb-4">Guest Management</div><div class="flex flex-col gap-1 text-sm font-semibold text-slate-300 uppercase"><span>Rimple sharma</span><span>Varsha Gehlot</span></div></div>
+                    <div class="glass p-6 rounded-2xl border border-white/5"><div class="text-[8px] mono text-emerald-400 font-bold uppercase tracking-widest mb-4">Floor Team</div><div class="flex flex-col gap-1 text-sm font-semibold text-slate-300 uppercase"><span>Amit Kumar Gautam</span><span>Lalu kumar</span><span>Shabeer P</span><span>Rameshwari Sahu</span><span>Divya R</span></div></div>
+                    <div class="glass p-6 rounded-2xl border border-white/5"><div class="text-[8px] mono text-emerald-400 font-bold uppercase tracking-widest mb-4">Gas Management</div><div class="text-lg font-bold text-white uppercase tracking-wide">Sahans Kumar Singh</div></div>
+                    <div class="glass p-6 rounded-2xl border border-white/5"><div class="text-[8px] mono text-emerald-400 font-bold uppercase tracking-widest mb-4">Billing Team</div><div class="grid grid-cols-1 gap-1 text-sm font-semibold text-slate-300 uppercase"><span>Rinki Kumari</span><span>Rinku Kumari</span><span>Manish kumar</span><span>Pawan Kashyap</span><span>Rajnish Kashyap</span><span>Pappu Kumar</span><span>Rahul S. Gore</span><span>Pooja</span><span>Pratiksha</span><span>Remya E R</span><span>Geeta</span><span>Murlidhar kumar</span><span>Asha</span><span>Soshant Kumar</span><span>Ratna</span><span>Anuj Kumar</span><span>Rameshwari Sahu</span></div></div>
+                </div>
+
+                <div class="mt-10 pt-6 border-t border-white/5 text-center">
+                    <button onclick="closeMentorsModal()" class="mono text-[10px] text-slate-500 uppercase tracking-[0.5em] hover:text-emerald-400 transition-colors">[ Back ]</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Thematic Experts Modal -->
+    <div id="thematic-modal" class="modal-overlay">
+        <div class="modal-content glass p-1 rounded-[2.5rem] md:rounded-[3.5rem] border border-emerald-500/30 w-full max-w-5xl overflow-hidden">
+            <div class="bg-slate-900/80 p-6 md:p-12 rounded-[2.3rem] md:rounded-[3.3rem]">
+                <div class="flex justify-between items-start mb-8 border-b border-white/5 pb-6">
+                    <div>
+                        <div class="text-[9px] md:text-[11px] mono text-emerald-500/60 tracking-[0.5em] mb-2 uppercase font-bold">Protocol_Alpha_Thematics</div>
+                        <h2 class="text-3xl md:text-5xl font-black uppercase tracking-tight text-white">Thematic Experts</h2>
+                    </div>
+                    <button onclick="closeThematicModal()" class="p-3 glass rounded-full hover:bg-white/10 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-slate-400"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+
+                <!-- 2 Column Grid with Scroll -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-h-[60vh] overflow-y-auto pr-4 personnel-grid">
+                    
+                    <!-- Aniket Verma -->
+                    <div class="glass p-8 rounded-[2rem] border border-white/5 hover:border-emerald-500/20 transition-all text-center group">
+                        <div class="mb-6 relative inline-block">
+                            <div class="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-emerald-500/20 overflow-hidden profile-img-glow bg-slate-800 mx-auto">
+                                <img src="https://kudumbashreenro.org/wp-content/uploads/2025/03/anki.png" alt="Aniket Verma" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500">
+                            </div>
+                        </div>
+                        <h3 class="text-2xl font-black text-white uppercase tracking-tight mb-2">Aniket Verma</h3>
+                        <div class="text-[10px] mono text-emerald-400 font-bold uppercase tracking-[0.4em]">Operational Thematic</div>
+                    </div>
+
+                    <!-- MS Tamang -->
+                    <div class="glass p-8 rounded-[2rem] border border-white/5 hover:border-emerald-500/20 transition-all text-center group">
+                        <div class="mb-6 relative inline-block">
+                            <div class="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-emerald-500/20 overflow-hidden profile-img-glow bg-slate-800 mx-auto">
+                                <img src="https://kudumbashreenro.org/wp-content/uploads/2025/03/reey.png" alt="MS Tamang" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500">
+                            </div>
+                        </div>
+                        <h3 class="text-2xl font-black text-white uppercase tracking-tight mb-2">MS Tamang</h3>
+                        <div class="text-[10px] mono text-emerald-400 font-bold uppercase tracking-[0.4em]">Guest Management Thematic</div>
+                    </div>
+
+                    <!-- Shiraz Solanki -->
+                    <div class="glass p-8 rounded-[2rem] border border-white/5 hover:border-emerald-500/20 transition-all text-center group">
+                        <div class="mb-6 relative inline-block">
+                            <div class="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-emerald-500/20 overflow-hidden profile-img-glow bg-slate-800 mx-auto">
+                                <img src="https://kudumbashreenro.org/wp-content/uploads/2025/07/NRO-Website--scaled.jpg" alt="Shiraz Solanki" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500">
+                            </div>
+                        </div>
+                        <h3 class="text-2xl font-black text-white uppercase tracking-tight mb-2">Shiraz Solanki</h3>
+                        <div class="text-[10px] mono text-emerald-400 font-bold uppercase tracking-[0.4em]">Marketing Thematic</div>
+                    </div>
+
+                    <!-- Vishal Raj -->
+                    <div class="glass p-8 rounded-[2rem] border border-white/5 hover:border-emerald-500/20 transition-all text-center group">
+                        <div class="mb-6 relative inline-block">
+                            <div class="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-emerald-500/20 overflow-hidden profile-img-glow bg-slate-800 mx-auto">
+                                <img src="https://kudumbashreenro.org/wp-content/uploads/2025/08/Photo_Vishal-1-vishalraj-knro.jpg" alt="Vishal Raj" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500">
+                            </div>
+                        </div>
+                        <h3 class="text-2xl font-black text-white uppercase tracking-tight mb-2">Vishal Raj</h3>
+                        <div class="text-[10px] mono text-emerald-400 font-bold uppercase tracking-[0.4em]">Finance Thematic</div>
+                    </div>
+
+                    <!-- Kheman Rai Chelak -->
+                    <div class="glass p-8 rounded-[2rem] border border-white/5 hover:border-emerald-500/20 transition-all text-center group">
+                        <div class="mb-6 relative inline-block">
+                            <div class="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-emerald-500/20 overflow-hidden profile-img-glow bg-slate-800 mx-auto">
+                                <img src="https://kudumbashreenro.org/wp-content/uploads/2025/04/rai.png" alt="Kheman Rai Chelak" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500">
+                            </div>
+                        </div>
+                        <h3 class="text-2xl font-black text-white uppercase tracking-tight mb-2">Kheman Rai Chelak</h3>
+                        <div class="text-[10px] mono text-emerald-400 font-bold uppercase tracking-[0.4em]">Social Outreach Thematic</div>
+                    </div>
+
+                    <!-- Bappaditya Mahata -->
+                    <div class="glass p-8 rounded-[2rem] border border-white/5 hover:border-emerald-500/20 transition-all text-center group">
+                        <div class="mb-6 relative inline-block">
+                            <div class="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-emerald-500/20 overflow-hidden profile-img-glow bg-slate-800 mx-auto">
+                                <img src="https://kudumbashreenro.org/wp-content/uploads/2025/03/mahata.png" alt="Bappaditya Mahata" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500">
+                            </div>
+                        </div>
+                        <h3 class="text-2xl font-black text-white uppercase tracking-tight mb-2">Bappaditya Mahata</h3>
+                        <div class="text-[10px] mono text-emerald-400 font-bold uppercase tracking-[0.4em]">Resource Development Thematic</div>
+                    </div>
+
+                    <!-- Ashwajit Ajay Jamgade -->
+                    <div class="glass p-8 rounded-[2rem] border border-white/5 hover:border-emerald-500/20 transition-all text-center group">
+                        <div class="mb-6 relative inline-block">
+                            <div class="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-emerald-500/20 overflow-hidden profile-img-glow bg-slate-800 mx-auto">
+                                <img src="https://kudumbashreenro.org/wp-content/uploads/2025/04/ajay.png" alt="Ashwajit Ajay Jamgade" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500">
+                            </div>
+                        </div>
+                        <h3 class="text-2xl font-black text-white uppercase tracking-tight mb-2">Ashwajit Ajay Jamgade</h3>
+                        <div class="text-[10px] mono text-emerald-400 font-bold uppercase tracking-[0.4em]">Capacity Building Thematic</div>
+                    </div>
+
+                    <!-- Muskan Rai -->
+                    <div class="glass p-8 rounded-[2rem] border border-white/5 hover:border-emerald-500/20 transition-all text-center group">
+                        <div class="mb-6 relative inline-block">
+                            <div class="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-emerald-500/20 overflow-hidden profile-img-glow bg-slate-800 mx-auto">
+                                <img src="https://kudumbashreenro.org/wp-content/uploads/2025/03/musk.png" alt="Muskan Rai" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500">
+                            </div>
+                        </div>
+                        <h3 class="text-2xl font-black text-white uppercase tracking-tight mb-2">Muskan Rai</h3>
+                        <div class="text-[10px] mono text-emerald-400 font-bold uppercase tracking-[0.4em]">Floor Management Thematic</div>
+                    </div>
+                </div>
+
+                <div class="mt-8 text-center pt-4 border-t border-white/5">
+                    <button onclick="closeThematicModal()" class="mono text-[10px] text-slate-500 uppercase tracking-[0.5em] hover:text-emerald-400 transition-colors">
+                        [ Back ]
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Team Lead Profile Modal -->
+    <div id="profile-modal" class="modal-overlay">
+        <div class="modal-content glass p-1 rounded-[3rem] border border-emerald-500/30 w-full max-w-xl overflow-hidden">
+            <div class="bg-slate-900/60 p-8 md:p-12 rounded-[2.8rem] text-center">
+                <div class="flex justify-end mb-4">
+                    <button onclick="closeProfileModal()" class="p-3 glass rounded-full hover:bg-white/10 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-slate-400"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+                <div class="mb-8 relative inline-block">
+                    <div class="absolute -inset-4 bg-emerald-500/20 blur-2xl rounded-full"></div>
+                    <div class="w-48 h-48 md:w-56 md:h-56 rounded-full border-4 border-emerald-500/30 overflow-hidden relative profile-img-glow mx-auto bg-slate-800">
+                        <img src="https://kudumbashreenro.org/wp-content/uploads/2025/03/kashy.png" alt="Shreyash Kashyap" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700">
+                    </div>
+                </div>
+                <div class="mb-10">
+                    <h2 class="text-4xl md:text-5xl font-black uppercase tracking-tight text-white mb-2">Shreyash Kashyap</h2>
+                    <div class="text-[10px] md:text-[12px] mono text-emerald-400 font-bold uppercase tracking-[0.6em] mb-3">Assistant Program Manager</div>
+                    <div class="h-1 w-24 bg-emerald-500/40 mx-auto rounded-full mt-6"></div>
+                </div>
+                <button onclick="closeProfileModal()" class="mono text-[10px] text-slate-500 uppercase tracking-[0.4em] hover:text-emerald-400 transition-colors">[ Back ]</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- General Sync Protocol Modal -->
     <div id="protocol-modal" class="modal-overlay">
         <div id="modal-container" class="modal-content glass p-1 rounded-[2rem] md:rounded-[3rem] border border-emerald-500/30 w-full max-w-2xl overflow-hidden">
             <div class="bg-slate-900/50 p-6 md:p-10 rounded-[1.8rem] md:rounded-[2.8rem]">
@@ -197,145 +394,122 @@
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-slate-400"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                     </button>
                 </div>
-
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-8 md:mb-10">
-                    <!-- Option 1 -->
                     <button class="p-6 md:p-8 rounded-[1.5rem] md:rounded-[2rem] glass border border-white/5 hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all text-left group flex flex-col gap-3 md:gap-4">
                         <div class="protocol-icon-bg w-10 h-10 bg-emerald-500/10 rounded-xl flex items-center justify-center border border-emerald-500/20 group-hover:scale-110 transition-transform">
                             <svg class="protocol-icon-1" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
                         </div>
                         <div>
                             <div class="text-xl md:text-2xl font-black uppercase tracking-tight check-title-1">Production CHECK</div>
-                            <p class="text-[9px] md:text-[10px] mono text-slate-500 uppercase tracking-widest mt-1 check-desc-1">Verify kitchen readiness & output specs</p>
+                            <p class="text-[9px] md:text-[10px] mono text-slate-500 uppercase tracking-widest mt-1 check-desc-1 text-nowrap">Verify kitchen readiness & output specs</p>
                         </div>
                     </button>
-
-                    <!-- Option 2 -->
                     <button class="p-6 md:p-8 rounded-[1.5rem] md:rounded-[2rem] glass border border-white/5 hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all text-left group flex flex-col gap-3 md:gap-4">
                         <div class="protocol-icon-bg w-10 h-10 bg-emerald-500/10 rounded-xl flex items-center justify-center border border-emerald-500/20 group-hover:scale-110 transition-transform">
                             <svg class="protocol-icon-2" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
                         </div>
                         <div>
                             <div class="text-xl md:text-2xl font-black uppercase tracking-tight check-title-2">Stall CHECK</div>
-                            <p class="text-[9px] md:text-[10px] mono text-slate-500 uppercase tracking-widest mt-1 check-desc-2">Audit individual vendor modules</p>
+                            <p class="text-[9px] md:text-[10px] mono text-slate-500 uppercase tracking-widest mt-1 check-desc-2 text-nowrap">Audit individual vendor modules</p>
                         </div>
                     </button>
                 </div>
-
-                <div class="text-center">
-                    <p class="text-[8px] md:text-[9px] mono text-slate-600 uppercase tracking-[0.5em]">Secure_Sync_Port_8080 // IFC_GURUGRAM</p>
-                </div>
             </div>
         </div>
     </div>
 
-    <!-- Audio Toggle -->
-    <div id="sound-btn" class="fixed bottom-6 right-6 md:bottom-8 md:right-8 z-50">
-        <button class="glass p-4 md:p-5 rounded-full border border-white/10 shadow-xl transition-transform active:scale-90">
-            <svg id="sound-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-400">
-                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-                <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-                <line x1="23" y1="9" x2="17" y2="15" id="mute-line" style="display: none;"></line>
-                <line x1="17" y1="9" x2="23" y2="15" id="mute-line-2" style="display: none;"></line>
-            </svg>
-        </button>
-    </div>
-
-    <!-- Nav -->
-    <nav class="fixed top-0 w-full z-50 px-4 md:px-8 py-6 md:py-10">
-        <div class="max-w-7xl mx-auto flex justify-between items-center">
+    <!-- Navigation Bar -->
+    <nav class="fixed top-0 w-full z-50 bg-transparent border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-4 md:px-8 py-4 md:py-8 flex justify-between items-center">
+            
             <div class="flex items-center gap-3 md:gap-5 group cursor-pointer">
                 <div class="w-10 h-10 md:w-12 md:h-12 bg-emerald-500/10 rounded-xl md:rounded-2xl flex items-center justify-center border border-emerald-500/30 group-hover:border-emerald-500 transition-all duration-500 shadow-[0_0_15px_rgba(16,185,129,0.1)] overflow-hidden p-1">
-                    <img src="https://aniketvermawork-beep.github.io/logo/image.png" alt="IFC Logo" class="w-full h-full object-contain" onerror="this.style.display='none'">
+                    <img src="https://aniketvermawork-beep.github.io/logo/image.png" alt="IFC Logo" class="w-full h-full object-contain">
                 </div>
                 <div class="overflow-hidden">
                     <span class="block text-sm md:text-xl font-black tracking-[0.2em] md:tracking-[0.3em] uppercase leading-none text-white whitespace-nowrap">INDIA FOOD COURT</span>
-                    <span class="block text-[7px] md:text-[8px] mono text-emerald-500/50 tracking-[0.4em] md:tracking-[0.5em] mt-1 md:mt-2 uppercase">SECURE_NODE_04</span>
-                </div>
-            </div>
-            <div class="hidden md:flex items-center gap-6">
-                <div class="flex items-center gap-2">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span class="text-[9px] mono text-emerald-500/60 uppercase tracking-widest">System_Online</span>
-                </div>
-                <div class="text-[10px] mono text-slate-500 tracking-widest opacity-60">
-                    28.4595° N, 77.0266° E
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <main class="relative pt-24 md:pt-28 pb-20 md:pb-32 px-4 md:px-6 z-10">
-        <div class="max-w-7xl mx-auto">
-            
-            <!-- STATUS BADGE -->
-            <div class="flex justify-center mb-12 md:mb-16">
-                <div class="inline-flex items-center gap-3 px-4 py-1.5 md:px-4 md:py-1.5 rounded-full border border-emerald-500/20 bg-emerald-500/5 text-emerald-400 text-[8px] md:text-[10px] font-bold uppercase tracking-[0.4em] mono shadow-[0_0_20px_rgba(16,185,129,0.05)]">
-                    <span class="relative flex h-2 w-2">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                    </span>
-                    NEW PHASE LOADING...
+                    <span class="block text-[7px] md:text-[8px] mono text-emerald-500/50 tracking-[0.4em] md:tracking-[0.5em] mt-1 md:mt-2 uppercase">INDIA ON YOUR PLATE</span>
                 </div>
             </div>
 
-            <!-- Hero Section with Responsive Grid -->
-            <div class="grid grid-cols-1 lg:grid-cols-[70%_30%] gap-8 items-start mb-12 md:mb-16">
-                
-                <!-- Left Content: Fluid Typography -->
-                <div class="text-center lg:text-left">
-                    <h1 class="hero-title text-4xl sm:text-6xl md:text-8xl xl:text-9xl font-black tracking-tighter leading-[1.1] mb-2 uppercase break-words">
-                        Operational <br/><span class="text-slate-200">Framework</span>
-                    </h1>
-                    
-                    <p class="text-sm sm:text-lg md:text-xl text-slate-400 mb-10 leading-relaxed font-light tracking-widest uppercase mt-4">
-                        Initiating <span class="text-white font-bold">IFC GURUGRAM 2026</span> Standard Protocol
-                    </p>
+            <div class="flex items-center gap-2 md:gap-8">
+                <div class="hidden md:flex items-center gap-6 border-r border-white/10 pr-8">
+                    <div class="flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_#10b981]"></span>
+                        <span class="text-[9px] mono text-emerald-400 font-bold uppercase tracking-widest">System_Live</span>
+                    </div>
+                    <div class="text-[10px] mono text-slate-500 tracking-widest opacity-80 uppercase">28.4595° N, 77.0266° E</div>
                 </div>
 
-                <!-- Right Content: Responsive HUD Carousel -->
-                <div class="relative group mt-0 lg:mt-10">
-                    <div class="absolute -inset-10 bg-emerald-500/5 blur-[60px] rounded-full group-hover:bg-emerald-500/10 transition-colors duration-1000"></div>
-                    <div class="relative overflow-hidden">
-                        <div class="carousel-wrapper" id="carousel-wrap">
-                            <div class="carousel-container" id="dash-carousel">
-                                <div class="carousel-item p-4 text-left flex flex-col justify-center border-l-2 border-emerald-500/40 pl-6">
-                                    <div class="text-[8px] text-emerald-500/60 mono mb-2 tracking-[0.4em] uppercase font-bold">LOAD</div>
-                                    <div class="text-2xl md:text-3xl font-black neon-text mb-4 uppercase">Ready</div>
-                                    <div class="w-32 bg-white/5 h-1 rounded-full overflow-hidden">
-                                        <div class="bg-emerald-500 h-full w-full shadow-[0_0_15px_#10b981]"></div>
-                                    </div>
-                                </div>
-                                <div class="carousel-item p-4 text-left flex flex-col justify-center border-l-2 border-white/10 pl-6">
-                                    <div class="text-[8px] text-slate-500 mono mb-2 tracking-[0.4em] uppercase font-bold">PHASE</div>
-                                    <div class="text-2xl md:text-3xl font-black text-white mb-1 tracking-tighter">2026</div>
-                                    <div class="text-[9px] text-emerald-400 mono uppercase tracking-widest font-bold">▲ Deploy</div>
-                                </div>
-                                <div class="carousel-item p-4 text-left flex flex-col justify-center border-l-2 border-white/10 pl-6">
-                                    <div class="text-[8px] text-slate-500 mono mb-2 tracking-[0.4em] uppercase font-bold">HUB</div>
-                                    <div class="text-2xl md:text-3xl font-black text-white mb-3">GGM_05</div>
-                                    <div class="flex gap-1.5 items-center">
-                                        <div class="w-2 h-2 bg-emerald-500 rounded-sm animate-pulse"></div>
-                                        <span class="mono text-[9px] text-slate-400 uppercase tracking-widest">Secure</span>
-                                    </div>
-                                </div>
-                                <div class="carousel-item p-4 text-left flex flex-col justify-center border-l-2 border-white/10 pl-6">
-                                    <div class="text-[8px] text-slate-500 mono mb-2 tracking-[0.4em] uppercase font-bold">MENTORS</div>
-                                    <div class="text-2xl md:text-3xl font-black text-white mb-2">39</div>
-                                    <div class="text-[9px] text-emerald-500 mono font-bold tracking-widest uppercase">▲ Team</div>
-                                </div>
-                                <div class="carousel-item p-4 text-left flex flex-col justify-center border-l-2 border-white/10 pl-6">
-                                    <div class="text-[8px] text-slate-500 mono mb-2 tracking-[0.4em] uppercase font-bold">CORE</div>
-                                    <div class="text-2xl md:text-3xl font-black text-white mb-2">08</div>
-                                    <div class="text-[9px] text-amber-500/80 mono font-bold uppercase tracking-widest">▲ Active</div>
+                <!-- OUR TEAM DROPDOWN -->
+                <div class="relative">
+                    <button id="team-btn" onclick="toggleTeamMenu()" class="flex items-center gap-2 mono text-[9px] md:text-[11px] text-emerald-400 font-bold uppercase tracking-[0.2em] hover:text-white transition-colors py-2 px-5 rounded-full border border-emerald-500/20 hover:bg-emerald-500/10 whitespace-nowrap">
+                        Our Team <svg id="team-arrow" class="transition-transform duration-300" xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                    </button>
+                    <div id="team-dropdown" class="dropdown-menu absolute right-0 mt-4 w-64 glass border border-white/10 rounded-2xl p-2 z-[60] shadow-2xl">
+                        <div class="flex flex-col gap-1 text-nowrap">
+                            <button onclick="openMentorsModal(event)" class="w-full text-left p-3.5 rounded-xl hover:bg-emerald-500/10 flex items-center justify-between group transition-all">
+                                <span class="mono text-[10px] font-bold tracking-widest uppercase">Mentors</span>
+                                <span class="text-[8px] text-emerald-500/40 mono group-hover:text-emerald-400 uppercase">Access_Database</span>
+                            </button>
+                            <div class="relative border-t border-white/5 mt-1 pt-1">
+                                <button onclick="toggleProfessionals(event)" class="w-full p-3.5 rounded-xl hover:bg-emerald-500/10 flex items-center justify-between group transition-all text-left">
+                                    <span class="mono text-[10px] font-bold tracking-widest uppercase">Professionals</span>
+                                    <svg id="prof-arrow" class="transition-transform duration-300" xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                                </button>
+                                <div id="prof-submenu" class="sub-menu bg-emerald-500/5 rounded-xl mt-1">
+                                    <button onclick="openProfileModal(event)" class="w-full text-left block p-3 pl-8 mono text-[9px] text-slate-400 hover:text-emerald-400 uppercase tracking-widest">Team Lead</button>
+                                    <button onclick="openThematicModal(event)" class="w-full text-left block p-3 pl-8 mono text-[9px] text-slate-400 hover:text-emerald-400 uppercase tracking-widest border-t border-white/5">Thematic Experts</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
+    </nav>
 
-            <!-- BUTTON: Touch-friendly large action button -->
+    <main class="relative pt-32 md:pt-48 pb-20 md:pb-32 px-4 md:px-6 z-10">
+        <div class="max-w-7xl mx-auto">
+            <!-- Hero Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-[70%_30%] gap-8 items-start mb-12 md:mb-16">
+                <div class="text-center lg:text-left">
+                    <h1 class="hero-title text-4xl sm:text-6xl md:text-8xl xl:text-9xl font-black tracking-tighter leading-[1.1] mb-2 uppercase break-words">Operational <br/><span class="text-slate-200">Framework</span></h1>
+                    <p class="text-sm sm:text-lg md:text-xl text-slate-400 mb-10 leading-relaxed font-light tracking-widest uppercase mt-4">Initiating <span class="text-white font-bold">IFC GURUGRAM 2026</span> Standard Protocol</p>
+                </div>
+                <div class="relative group mt-0 lg:mt-10 overflow-hidden">
+                    <div class="carousel-wrapper" id="carousel-wrap">
+                        <div class="carousel-container" id="dash-carousel">
+                            <div class="carousel-item p-4 text-left flex flex-col justify-center border-l-2 border-emerald-500/40 pl-6">
+                                <div class="text-[8px] mono text-emerald-500/60 font-bold uppercase tracking-[0.4em] mb-1">LOAD</div>
+                                <div class="text-2xl md:text-3xl font-black neon-text mb-2 uppercase">Ready</div>
+                                <div class="text-[9px] text-emerald-400 mono font-bold tracking-widest uppercase">▲ Deploy</div>
+                            </div>
+                            <div class="carousel-item p-4 text-left flex flex-col justify-center border-l-2 border-white/10 pl-6">
+                                <div class="text-[8px] mono text-slate-500 font-bold uppercase tracking-[0.4em] mb-1">PHASE</div>
+                                <div class="text-2xl md:text-3xl font-black text-white uppercase">2026</div>
+                                <div class="text-[9px] text-emerald-400 mono font-bold tracking-widest uppercase">▲ Active</div>
+                            </div>
+                            <div class="carousel-item p-4 text-left flex flex-col justify-center border-l-2 border-white/10 pl-6">
+                                <div class="text-[8px] mono text-slate-500 font-bold uppercase tracking-[0.4em] mb-1">HUB</div>
+                                <div class="text-2xl md:text-3xl font-black text-white uppercase">GGM_05</div>
+                                <div class="text-[9px] text-emerald-400 mono font-bold tracking-widest uppercase">▲ Linked</div>
+                            </div>
+                            <div class="carousel-item p-4 text-left flex flex-col justify-center border-l-2 border-white/10 pl-6">
+                                <div class="text-[8px] mono text-slate-500 font-bold uppercase tracking-[0.4em] mb-1">MENTORS</div>
+                                <div class="text-2xl md:text-3xl font-black text-white uppercase">39</div>
+                                <div class="text-[9px] text-emerald-400 mono font-bold tracking-widest uppercase">▲ Verified</div>
+                            </div>
+                            <div class="carousel-item p-4 text-left flex flex-col justify-center border-l-2 border-white/10 pl-6">
+                                <div class="text-[8px] mono text-slate-500 font-bold uppercase tracking-[0.4em] mb-1">CORE</div>
+                                <div class="text-2xl md:text-3xl font-black text-white uppercase">08</div>
+                                <div class="text-[9px] text-amber-500 mono font-bold tracking-widest uppercase">▲ Critical</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="flex justify-center mb-24 md:mb-32">
                 <button id="initiate-btn" class="group relative px-12 md:px-16 py-5 md:py-6 bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-bold rounded-full transition-all duration-300 shadow-2xl shadow-emerald-900/40 overflow-hidden min-w-[200px]">
                     <span class="relative z-10 uppercase tracking-[0.2em] text-sm md:text-base">Initiate SOP</span>
@@ -343,113 +517,52 @@
                 </button>
             </div>
 
-            <!-- DAILY SYNCHRONIZATION HUB: Multi-column Mobile Tab Support -->
-            <div class="max-w-7xl mx-auto mb-24 md:mb-32">
-                <div class="glass rounded-[2rem] md:rounded-[2.5rem] overflow-hidden border border-white/10 p-1 md:p-2 relative tech-card">
+            <div id="sync-hub" class="max-w-7xl mx-auto mb-24 md:mb-32">
+                <div class="glass rounded-[2rem] md:rounded-[2.5rem] border border-white/10 p-1 md:p-2 relative tech-card">
                     <div class="flex items-center justify-between px-6 md:px-8 py-4 border-b border-white/5">
                         <div class="flex items-center gap-3">
                             <div class="w-2 h-2 bg-emerald-500 rounded-full shadow-[0_0_10px_#10b981]"></div>
-                            <h2 class="mono text-[8px] md:text-[10px] text-slate-300 tracking-[0.4em] md:tracking-[0.5em] uppercase">Synchronization Hub</h2>
+                            <h2 class="mono text-[8px] md:text-[10px] text-slate-300 tracking-[0.4em] md:tracking-[0.5em] uppercase font-bold text-nowrap text-ellipsis">Synchronization Hub</h2>
                         </div>
                         <div class="mono text-[8px] md:text-[10px] text-slate-500 tracking-widest uppercase" id="current-time-hud">--:--:--</div>
                     </div>
-
-                    <!-- Tabs Header: 2x2 grid on mobile, 1x4 on desktop -->
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-1.5 md:gap-2 p-3 md:p-4">
                         <button onclick="switchTab(0)" class="tab-btn active p-3 md:p-6 rounded-2xl md:rounded-3xl glass border border-white/5 flex flex-col items-center gap-1 group">
                             <span class="text-xs md:text-xl font-black tracking-tight uppercase leading-tight text-center">Fresh Start</span>
-                            <span class="mono text-[7px] md:text-[10px] tracking-[0.2em] text-slate-500 group-hover:text-emerald-400">12:00</span>
                         </button>
                         <button onclick="switchTab(1)" class="tab-btn p-3 md:p-6 rounded-2xl md:rounded-3xl glass border border-white/5 flex flex-col items-center gap-1 group">
                             <span class="text-xs md:text-xl font-black tracking-tight uppercase leading-tight text-center">Peak Hour</span>
-                            <span class="mono text-[7px] md:text-[10px] tracking-[0.2em] text-slate-500 group-hover:text-emerald-400">18:00</span>
                         </button>
                         <button onclick="switchTab(2)" class="tab-btn p-3 md:p-6 rounded-2xl md:rounded-3xl glass border border-white/5 flex flex-col items-center gap-1 group">
                             <span class="text-xs md:text-xl font-black tracking-tight uppercase leading-tight text-center">Closing</span>
-                            <span class="mono text-[7px] md:text-[10px] tracking-[0.2em] text-slate-500 group-hover:text-emerald-400">22:00</span>
                         </button>
                         <button onclick="switchTab(3)" class="tab-btn p-3 md:p-6 rounded-2xl md:rounded-3xl glass border border-white/5 flex flex-col items-center gap-1 group">
                             <span class="text-xs md:text-xl font-black tracking-tight uppercase leading-tight text-center">Feedback</span>
-                            <span class="mono text-[7px] md:text-[10px] tracking-[0.2em] text-slate-500 group-hover:text-emerald-400 uppercase">Anytime</span>
                         </button>
                     </div>
-
-                    <!-- Sync Content area -->
                     <div class="p-6 md:p-12 text-center" id="sync-content">
                         <div class="max-w-md mx-auto">
-                            <div class="mb-6 md:mb-8">
-                                <div class="text-[8px] md:text-[9px] mono text-emerald-500/60 tracking-[0.3em] mb-4 uppercase font-bold" id="sync-status">SYSTEM: PENDING</div>
-                                <h3 class="text-2xl md:text-4xl font-black mb-2 uppercase" id="sync-title">The Fresh Start</h3>
-                                <p class="text-[10px] md:text-sm text-slate-500 tracking-widest uppercase leading-relaxed" id="sync-desc">Node data validation required for 12:00 PM Cycle</p>
-                            </div>
-                            <button onclick="handleExecuteSync()" id="execute-btn" class="w-full sm:w-auto px-10 py-4 rounded-full border border-emerald-500/30 bg-emerald-500/5 hover:bg-emerald-500/20 text-emerald-400 font-bold mono text-[10px] md:text-xs tracking-widest transition-all uppercase active:scale-95">
-                                [ Execute Sync ]
-                            </button>
+                            <h3 class="text-2xl md:text-4xl font-black mb-2 uppercase" id="sync-title">The Fresh Start</h3>
+                            <p class="text-[10px] md:text-sm text-slate-500 tracking-widest uppercase mb-8" id="sync-desc">Validation required for 12:00 PM Cycle</p>
+                            <button onclick="handleExecuteSync()" id="execute-btn" class="px-10 py-4 rounded-full border border-emerald-500/30 bg-emerald-500/5 hover:bg-emerald-500/20 text-emerald-400 font-bold mono text-[10px] md:text-xs tracking-widest transition-all uppercase">Execute Sync</button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Team Operational Grid: Full responsiveness -->
-            <div id="team-nodes" class="max-w-7xl mx-auto mt-24 md:mt-44 scroll-mt-24">
-                <div class="flex items-center gap-6 mb-12 md:mb-14">
-                    <div class="h-px flex-grow bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
-                    <h2 class="mono text-[8px] md:text-sm text-slate-300 tracking-[0.3em] md:tracking-[0.45em] uppercase text-center font-bold">
-                        Operational Team Nodes
-                    </h2>
-                    <div class="h-px flex-grow bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
-                </div>
-                
+            <div id="team-nodes" class="max-w-7xl mx-auto mt-24 md:mt-44 scroll-mt-24 pb-20">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-                    <!-- Cards with improved mobile padding and sizing -->
-                    <div class="p-8 md:p-10 rounded-[2rem] md:rounded-[2.5rem] glass tech-card team-card">
+                    <div class="p-8 md:p-10 rounded-[2rem] glass tech-card team-card">
                         <div class="text-[8px] md:text-[9px] text-emerald-500/50 mono mb-6 tracking-[0.4em] uppercase font-bold">NODE_PR_01</div>
                         <h3 class="text-xl md:text-2xl font-black mb-6 tracking-tight uppercase">PRODUCTION TEAM</h3>
-                        <div class="flex items-center gap-4">
-                            <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_#10b981]"></div>
-                            <span class="mono text-[9px] md:text-[10px] text-emerald-500/60 uppercase tracking-widest font-bold">Active</span>
-                        </div>
                     </div>
-                    <div class="p-8 md:p-10 rounded-[2rem] md:rounded-[2.5rem] glass tech-card team-card">
+                    <div class="p-8 md:p-10 rounded-[2rem] glass tech-card team-card">
                         <div class="text-[8px] md:text-[9px] text-slate-500 mono mb-6 tracking-[0.4em] uppercase font-bold">NODE_BI_02</div>
                         <h3 class="text-xl md:text-2xl font-black mb-6 tracking-tight uppercase">BILLING TEAM</h3>
-                        <div class="flex items-center gap-4">
-                            <div class="w-2.5 h-2.5 rounded-full bg-emerald-500/40"></div>
-                            <span class="mono text-[9px] md:text-[10px] text-slate-500 uppercase tracking-widest">Linked</span>
-                        </div>
                     </div>
-                    <div class="p-8 md:p-10 rounded-[2rem] md:rounded-[2.5rem] glass tech-card team-card">
-                        <div class="text-[8px] md:text-[9px] text-slate-500 mono mb-6 tracking-[0.4em] uppercase font-bold">NODE_FL_03</div>
-                        <h3 class="text-xl md:text-2xl font-black mb-6 tracking-tight uppercase">FLOOR TEAM</h3>
-                        <div class="flex items-center gap-4">
-                            <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
-                            <span class="mono text-[9px] md:text-[10px] text-emerald-500/60 uppercase tracking-widest font-bold">Ready</span>
-                        </div>
-                    </div>
-                    <div class="p-8 md:p-10 rounded-[2rem] md:rounded-[2.5rem] glass tech-card team-card">
-                        <div class="text-[8px] md:text-[9px] text-slate-500 mono mb-6 tracking-[0.4em] uppercase font-bold">NODE_GS_04</div>
-                        <h3 class="text-xl md:text-2xl font-black mb-6 tracking-tight uppercase">GAS MGMT</h3>
-                        <div class="flex items-center gap-4">
-                            <div class="w-2.5 h-2.5 rounded-full bg-emerald-500/80"></div>
-                            <span class="mono text-[9px] md:text-[10px] text-emerald-500/60 uppercase tracking-widest font-bold">Optimized</span>
-                        </div>
-                    </div>
-                    <div class="p-8 md:p-10 rounded-[2rem] md:rounded-[2.5rem] glass tech-card team-card">
-                        <div class="text-[8px] md:text-[9px] text-slate-500 mono mb-6 tracking-[0.4em] uppercase font-bold">NODE_IN_05</div>
-                        <h3 class="text-xl md:text-2xl font-black mb-6 tracking-tight uppercase">INVENTORY</h3>
-                        <div class="flex items-center gap-4">
-                            <div class="w-2.5 h-2.5 rounded-full bg-emerald-500/60"></div>
-                            <span class="mono text-[9px] md:text-[10px] text-emerald-500/60 uppercase tracking-widest font-bold">Synced</span>
-                        </div>
-                    </div>
-                    <!-- Resolved Guest Management overflow for mobile -->
-                    <div class="p-8 md:p-10 rounded-[2rem] md:rounded-[2.5rem] glass tech-card team-card">
+                    <div class="p-8 md:p-10 rounded-[2rem] glass tech-card team-card">
                         <div class="text-[8px] md:text-[9px] text-slate-500 mono mb-6 tracking-[0.4em] uppercase font-bold">NODE_GS_06</div>
                         <h3 class="text-xl md:text-2xl font-black mb-6 tracking-tight uppercase break-words">GUEST MGMT</h3>
-                        <div class="flex items-center gap-4">
-                            <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_#10b981]"></div>
-                            <span class="mono text-[9px] md:text-[10px] text-emerald-500/60 uppercase tracking-widest font-bold">Active</span>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -457,218 +570,159 @@
     </main>
 
     <footer class="relative py-12 md:py-16 text-center border-t border-white/5 z-10 overflow-hidden bg-black/20">
-        <div class="max-w-7xl mx-auto px-6 flex flex-col items-center gap-6 md:gap-8">
-            <div class="flex items-center gap-8 md:gap-12 opacity-50 scale-90 md:scale-100">
-                <div class="flex flex-col items-center">
-                    <span class="text-[7px] md:text-[8px] mono uppercase tracking-[0.4em] mb-1 text-slate-400">Status</span>
-                    <span class="text-[9px] md:text-[10px] mono text-emerald-400 font-bold uppercase">Critical</span>
-                </div>
-                <div class="w-px h-6 md:h-8 bg-white/10"></div>
-                <div class="flex flex-col items-center">
-                    <span class="text-[7px] md:text-[8px] mono uppercase tracking-[0.4em] mb-1 text-slate-400">Version</span>
-                    <span class="text-[9px] md:text-[10px] mono text-white font-bold uppercase">v2.0.26</span>
-                </div>
-            </div>
-            
-            <div class="flex flex-col gap-2 text-center">
-                <p class="text-white text-base md:text-lg font-black tracking-[0.4em] md:tracking-[0.5em] uppercase">India Food Court</p>
-                <div class="flex items-center justify-center gap-3 md:gap-4">
-                    <span class="h-px w-6 md:w-8 bg-emerald-500/40"></span>
-                    <p class="text-emerald-500/60 text-[8px] md:text-[10px] mono uppercase tracking-[0.4em] md:tracking-[0.8em]">Aniket Verma</p>
-                    <span class="h-px w-6 md:w-8 bg-emerald-500/40"></span>
-                </div>
-            </div>
-            
-            <p class="text-slate-600 text-[8px] md:text-[9px] mono uppercase tracking-[0.8em] md:tracking-[1.2em] opacity-40">Gurugram // 2026</p>
-        </div>
+        <p class="text-white text-base md:text-lg font-black tracking-[0.4em] uppercase">India Food Court</p>
+        <p class="text-emerald-500/60 text-[8px] md:text-[10px] mono uppercase tracking-[0.8em]">Aniket Verma // 2026</p>
     </footer>
 
     <script>
-        const canvas = document.getElementById('starfield');
-        const ctx = canvas.getContext('2d');
-        const soundBtn = document.getElementById('sound-btn');
-        const initiateBtn = document.getElementById('initiate-btn');
-        const teamNodesSection = document.getElementById('team-nodes');
-        const modal = document.getElementById('protocol-modal');
-        const modalContainer = document.getElementById('modal-container');
-        const modalTitle = document.getElementById('modal-phase-title');
-        const modalSubLabel = document.getElementById('modal-sub-label');
-        const muteLines = [document.getElementById('mute-line'), document.getElementById('mute-line-2')];
+        document.addEventListener('DOMContentLoaded', () => {
+            const canvas = document.getElementById('starfield');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const teamNodesSection = document.getElementById('team-nodes');
+            const modal = document.getElementById('protocol-modal');
+            const profileModal = document.getElementById('profile-modal');
+            const mentorsModal = document.getElementById('mentors-modal');
+            const thematicModal = document.getElementById('thematic-modal');
+            const teamDropdown = document.getElementById('team-dropdown');
+            const profSubmenu = document.getElementById('prof-submenu');
+            const profArrow = document.getElementById('prof-arrow');
+            const teamArrow = document.getElementById('team-arrow');
+            const muteLines = [document.getElementById('mute-line'), document.getElementById('mute-line-2')];
+            const soundBtn = document.getElementById('sound-btn');
+            const initiateBtn = document.getElementById('initiate-btn');
+            const hudTime = document.getElementById('current-time-hud');
 
-        // --- TABS LOGIC ---
-        let currentActiveTabIndex = 0;
-        const syncData = [
-            { title: "THE FRESH START", time: "12:00 PM", status: "READY_FOR_UPLINK", desc: "Mid-day cycle optimization and node readiness validation Required for 12:00 PM Cycle." },
-            { title: "THE PEAK HOUR", time: "06:00 PM", status: "LOAD_BALANCING_ACTIVE", desc: "Peak performance synchronization and ground operational load distribution." },
-            { title: "THE CLOSING", time: "10:00 PM", status: "REPORTING_PHASE", desc: "Final day cycle reporting and secure operational transition protocol." },
-            { title: "THE FEEDBACK", time: "ANYTIME", status: "CONTINUOUS_MONITORING", desc: "Ad-hoc guest insight collection and immediate operational feedback loop." }
-        ];
+            // --- MENU FUNCTIONS ---
+            window.toggleTeamMenu = function() {
+                if (!teamDropdown) return;
+                teamDropdown.classList.toggle('active');
+                if (teamArrow) teamArrow.style.transform = teamDropdown.classList.contains('active') ? 'rotate(180deg)' : 'rotate(0deg)';
+                if (!teamDropdown.classList.contains('active')) {
+                    if (profSubmenu) profSubmenu.classList.remove('active');
+                    if (profArrow) profArrow.style.transform = 'rotate(0deg)';
+                }
+            };
 
-        function switchTab(index) {
-            currentActiveTabIndex = index;
-            const btns = document.querySelectorAll('.tab-btn');
-            btns.forEach(b => b.classList.remove('active'));
-            btns[index].classList.add('active');
+            window.toggleProfessionals = function(e) {
+                if (e) e.stopPropagation();
+                if (!profSubmenu) return;
+                profSubmenu.classList.toggle('active');
+                if (profArrow) profArrow.style.transform = profSubmenu.classList.contains('active') ? 'rotate(90deg)' : 'rotate(0deg)';
+            };
 
-            const title = document.getElementById('sync-title');
-            const desc = document.getElementById('sync-desc');
-            const status = document.getElementById('sync-status');
-            const execBtn = document.getElementById('execute-btn');
-            
-            title.innerText = syncData[index].title;
-            desc.innerText = syncData[index].desc;
-            status.innerText = `SYSTEM: ${syncData[index].status}`;
+            window.openMentorsModal = function(e) { if (e) e.stopPropagation(); if (mentorsModal) mentorsModal.classList.add('active'); };
+            window.closeMentorsModal = function() { if (mentorsModal) mentorsModal.classList.remove('active'); };
+            window.openThematicModal = function(e) { if (e) e.stopPropagation(); if (thematicModal) thematicModal.classList.add('active'); };
+            window.closeThematicModal = function() { if (thematicModal) thematicModal.classList.remove('active'); };
+            window.openProfileModal = function(e) { if (e) e.stopPropagation(); if (profileModal) profileModal.classList.add('active'); };
+            window.closeProfileModal = function() { if (profileModal) profileModal.classList.remove('active'); };
+            window.closeModal = function() { if (modal) modal.classList.remove('active'); };
 
-            if (index === 1) { // Peak Hour Amber
-                execBtn.style.color = '#fbbf24'; execBtn.style.borderColor = 'rgba(245, 158, 11, 0.4)';
-                status.style.color = '#fbbf24';
-            } else {
-                execBtn.style.color = '#10b981'; execBtn.style.borderColor = 'rgba(16, 185, 129, 0.4)';
-                status.style.color = '#10b981';
-            }
-        }
-
-        function handleExecuteSync() {
-            const check1Title = document.querySelector('.check-title-1');
-            const check1Desc = document.querySelector('.check-desc-1');
-            const check2Title = document.querySelector('.check-title-2');
-            const check2Desc = document.querySelector('.check-desc-2');
-            const iconBgs = document.querySelectorAll('.protocol-icon-bg');
-            const icons1 = document.querySelector('.protocol-icon-1');
-            const icons2 = document.querySelector('.protocol-icon-2');
-
-            if (currentActiveTabIndex === 0) { // The Fresh Start
-                modalTitle.innerText = "THE FRESH START";
-                modalTitle.className = "text-2xl md:text-4xl font-black uppercase tracking-tight";
-                modalSubLabel.innerText = "Protocol_Selection_Alpha";
-                modalSubLabel.style.color = "#10b981";
-                modalContainer.style.borderColor = "rgba(16, 185, 129, 0.3)";
-                check1Title.innerText = "Production CHECK";
-                check1Desc.innerText = "Verify kitchen readiness & output specs";
-                check2Title.innerText = "Stall CHECK";
-                check2Desc.innerText = "Audit individual vendor modules";
-                iconBgs.forEach(bg => bg.style.backgroundColor = "rgba(16, 185, 129, 0.1)");
-                icons1.style.stroke = "#10b981"; icons2.style.stroke = "#10b981";
-                modal.classList.add('active');
-            } else if (currentActiveTabIndex === 1) { // The Peak Hour
-                modalTitle.innerText = "THE PEAK HOUR";
-                modalTitle.className = "text-2xl md:text-4xl font-black uppercase tracking-tight text-amber-500";
-                modalSubLabel.innerText = "Protocol_Intensity_High";
-                modalSubLabel.style.color = "#f59e0b";
-                modalContainer.style.borderColor = "rgba(245, 158, 11, 0.3)";
-                check1Title.innerText = "Production CHECK";
-                check1Desc.innerText = "Monitor throughput & order velocity";
-                check2Title.innerText = "Stall CHECK";
-                check2Desc.innerText = "Real-time traffic & queue management";
-                iconBgs.forEach(bg => bg.style.backgroundColor = "rgba(245, 158, 11, 0.1)");
-                icons1.style.stroke = "#f59e0b"; icons2.style.stroke = "#f59e0b";
-                modal.classList.add('active');
-            } else {
-                const status = document.getElementById('sync-status');
-                status.innerText = "NODE_STATUS: INITIALIZED...";
-                setTimeout(() => status.innerText = `SYSTEM: ${syncData[currentActiveTabIndex].status}`, 2000);
-            }
-        }
-
-        function closeModal() { modal.classList.remove('active'); }
-        window.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
-
-        // --- TIME HUD ---
-        function updateHUDTime() {
-            const now = new Date();
-            const hud = document.getElementById('current-time-hud');
-            if(hud) hud.innerText = now.toLocaleTimeString('en-GB', { hour12: false });
-        }
-        setInterval(updateHUDTime, 1000); updateHUDTime();
-
-        // --- AUDIO ENGINE ---
-        const audio = new Audio('https://assets.mixkit.co/music/preview/mixkit-indian-percussion-rhythm-loop-302.mp3');
-        audio.loop = true; audio.volume = 0.2; let isPlaying = false;
-        function toggleAudio() {
-            if (isPlaying) { audio.pause(); muteLines.forEach(l => l.style.display = 'block'); } 
-            else { audio.play().catch(e => {}); muteLines.forEach(l => l.style.display = 'none'); }
-            isPlaying = !isPlaying;
-        }
-        soundBtn.addEventListener('click', toggleAudio);
-        initiateBtn.addEventListener('click', () => {
-            if(!isPlaying) toggleAudio();
-            initiateBtn.innerHTML = "<span class='mono text-xs uppercase tracking-widest'>Protocol_Live...</span>";
-            initiateBtn.classList.replace('bg-emerald-600', 'bg-emerald-500');
-            teamNodesSection.scrollIntoView({ behavior: 'smooth' });
-        });
-
-        // --- STARFIELD ---
-        let width, height, stars = []; const starCount = window.innerWidth < 768 ? 100 : 250;
-        class Star {
-            constructor() { this.reset(); }
-            reset() {
-                this.z = Math.random() * 2 + 0.5;
-                this.radius = Math.random() * Math.min(width, height) * 1.1 + 50;
-                this.angle = Math.random() * Math.PI * 2;
-                this.angularVelocity = (Math.random() * 0.0004 + 0.0001) * (this.z) * (Math.random() > 0.5 ? 1 : -1);
-                this.size = this.z * 0.75;
-                this.opacity = (Math.random() * 0.4 + 0.1) * (this.z / 2);
-            }
-            update() { this.angle += this.angularVelocity; }
-            draw() {
-                const centerX = width / 2;
-                const centerY = height / 2;
-                const x = centerX + Math.cos(this.angle) * this.radius;
-                const y = centerY + Math.sin(this.angle) * this.radius;
-                ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
-                ctx.beginPath(); ctx.arc(x, y, this.size, 0, Math.PI * 2); ctx.fill();
-            }
-        }
-        function init() {
-            const dpr = window.devicePixelRatio || 1;
-            width = window.innerWidth; height = window.innerHeight;
-            canvas.width = width * dpr; canvas.height = height * dpr;
-            canvas.style.width = width + 'px'; canvas.style.height = height + 'px';
-            ctx.scale(dpr, dpr);
-            stars = []; for (let i = 0; i < starCount; i++) stars.push(new Star());
-            stars.sort((a, b) => a.z - b.z);
-        }
-
-        // --- VERTICAL CAROUSEL LOGIC ---
-        let currentIdx = 0;
-        const carousel = document.getElementById('dash-carousel');
-        const carouselItems = document.querySelectorAll('.carousel-item');
-        const totalItems = carouselItems.length;
-
-        function updateCarousel() {
-            carouselItems.forEach((item, idx) => {
-                item.classList.toggle('active', idx === currentIdx);
-                item.classList.toggle('inactive', idx !== currentIdx);
+            window.addEventListener('click', (e) => {
+                if (!e.target.closest('#team-dropdown') && !e.target.closest('#team-btn') && !e.target.closest('.modal-content')) {
+                    if (teamDropdown) teamDropdown.classList.remove('active');
+                    if (profSubmenu) profSubmenu.classList.remove('active');
+                }
             });
-            carousel.style.transform = `translate3d(0, -${currentIdx * 136}px, 0)`; // 120 + 16px gap
-        }
-        setInterval(() => { currentIdx = (currentIdx + 1) % totalItems; updateCarousel(); }, 4000);
-        updateCarousel();
 
-        // --- INTERACTION ---
-        let targetX = 0, targetY = 0, curX = 0, curY = 0;
-        window.addEventListener('mousemove', (e) => {
-            targetX = (e.clientX - window.innerWidth / 2) / (window.innerWidth / 2);
-            targetY = (e.clientY - window.innerHeight / 2) / (window.innerHeight / 2);
+            // --- TABS LOGIC ---
+            let currentActiveTabIndex = 0;
+            const syncData = [
+                { title: "THE FRESH START", time: "12:00 PM", desc: "Validation required for 12:00 PM Cycle" },
+                { title: "THE PEAK HOUR", time: "06:00 PM", desc: "Performance sync Required for 18:00 Cycle" },
+                { title: "THE CLOSING", time: "10:00 PM", desc: "Final cycle reporting Required" },
+                { title: "THE FEEDBACK", time: "ANYTIME", desc: "Continuous guest insight collection" }
+            ];
+
+            window.switchTab = function(index) {
+                currentActiveTabIndex = index;
+                const btns = document.querySelectorAll('.tab-btn');
+                btns.forEach(b => b.classList.remove('active'));
+                if (btns[index]) btns[index].classList.add('active');
+                const titleEl = document.getElementById('sync-title');
+                const descEl = document.getElementById('sync-desc');
+                if (titleEl) titleEl.innerText = syncData[index].title;
+                if (descEl) descEl.innerText = syncData[index].desc;
+            };
+
+            window.handleExecuteSync = function() {
+                if (currentActiveTabIndex < 2 && modal) modal.classList.add('active');
+            };
+
+            function updateHUDTime() {
+                if (hudTime) hudTime.innerText = new Date().toLocaleTimeString('en-GB', { hour12: false });
+            }
+            setInterval(updateHUDTime, 1000); updateHUDTime();
+
+            const audio = new Audio('https://assets.mixkit.co/music/preview/mixkit-indian-percussion-rhythm-loop-302.mp3');
+            audio.loop = true; audio.volume = 0.2; let isPlaying = false;
+            if (soundBtn) {
+                soundBtn.addEventListener('click', () => {
+                    if (isPlaying) { audio.pause(); muteLines.forEach(l => { if(l) l.style.display = 'block'; }); } 
+                    else { audio.play().catch(e => {}); muteLines.forEach(l => { if(l) l.style.display = 'none'; }); }
+                    isPlaying = !isPlaying;
+                });
+            }
+
+            if (initiateBtn) {
+                initiateBtn.addEventListener('click', () => {
+                    initiateBtn.innerHTML = "<span class='mono text-xs uppercase tracking-widest'>Protocol_Live...</span>";
+                    initiateBtn.classList.replace('bg-emerald-600', 'bg-emerald-500');
+                    if (teamNodesSection) teamNodesSection.scrollIntoView({ behavior: 'smooth' });
+                });
+            }
+
+            // --- CAROUSEL LOGIC ---
+            let currentIdx = 0;
+            const carousel = document.getElementById('dash-carousel');
+            function updateCarousel() {
+                const items = document.querySelectorAll('.carousel-item');
+                items.forEach((item, idx) => {
+                    item.classList.toggle('active', idx === currentIdx);
+                    item.classList.toggle('inactive', idx !== currentIdx);
+                });
+                if (carousel) carousel.style.transform = `translate3d(0, -${currentIdx * 136}px, 0)`;
+            }
+            setInterval(() => { currentIdx = (currentIdx + 1) % 5; updateCarousel(); }, 4000);
+            updateCarousel();
+
+            // --- STARFIELD ---
+            let width, height, stars = []; const starCount = 150;
+            class Star {
+                constructor() { this.reset(); }
+                reset() {
+                    this.z = Math.random() * 2 + 0.5;
+                    this.radius = Math.random() * Math.min(window.innerWidth, window.innerHeight) * 1.1 + 50;
+                    this.angle = Math.random() * Math.PI * 2;
+                    this.angularVelocity = (Math.random() * 0.0004 + 0.0001) * (this.z) * (Math.random() > 0.5 ? 1 : -1);
+                    this.size = this.z * 0.75;
+                    this.opacity = (Math.random() * 0.4 + 0.1) * (this.z / 2);
+                }
+                update() { this.angle += this.angularVelocity; }
+                draw() {
+                    const x = (width/2) + Math.cos(this.angle) * this.radius;
+                    const y = (height/2) + Math.sin(this.angle) * this.radius;
+                    ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+                    ctx.beginPath(); ctx.arc(x, y, this.size, 0, Math.PI * 2); ctx.fill();
+                }
+            }
+            function init() {
+                const dpr = window.devicePixelRatio || 1;
+                width = window.innerWidth; height = window.innerHeight;
+                canvas.width = width * dpr; canvas.height = height * dpr;
+                canvas.style.width = width + 'px'; canvas.style.height = height + 'px';
+                ctx.scale(dpr, dpr); stars = []; for (let i = 0; i < starCount; i++) stars.push(new Star());
+            }
+            window.addEventListener('resize', init);
+            init();
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+                stars.forEach(star => { star.update(); star.draw(); });
+                requestAnimationFrame(animate);
+            }
+            animate();
         });
-        window.addEventListener('touchmove', (e) => {
-            targetX = (e.touches[0].clientX - window.innerWidth / 2) / (window.innerWidth / 2);
-            targetY = (e.touches[0].clientY - window.innerHeight / 2) / (window.innerHeight / 2);
-        });
-
-        function animate() {
-            curX += (targetX - curX) * 0.05; curY += (targetY - curY) * 0.05;
-            ctx.clearRect(0, 0, width, height);
-            stars.forEach(star => { star.update(); star.draw(); });
-            const neb1 = document.getElementById('neb-1');
-            const neb2 = document.getElementById('neb-2');
-            if(neb1) neb1.style.transform = `translate3d(${curX * 30}px, ${curY * 30}px, 0) scale(1.1)`;
-            if(neb2) neb2.style.transform = `translate3d(${-curX * 45}px, ${-curY * 45}px, 0) scale(1.05)`;
-            requestAnimationFrame(animate);
-        }
-
-        window.addEventListener('resize', init);
-        init(); animate();
     </script>
 </body>
 </html>
