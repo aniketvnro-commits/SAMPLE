@@ -87,6 +87,7 @@
         .tech-card {
             position: relative;
             transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            cursor: pointer;
         }
         
         .tech-card::before, .tech-card::after {
@@ -98,9 +99,9 @@
             transition: all 0.4s ease;
             pointer-events: none;
         }
-        .tech-card::before { top: 10px; left: 10px; border-top: 1.5px solid; border-left: 1.5px solid; }
-        .tech-card::after { bottom: 10px; right: 10px; border-bottom: 1.5px solid; border-right: 1.5px solid; }
-        .tech-card:hover { border-color: rgba(16, 185, 129, 0.3); background: rgba(255, 255, 255, 0.03); }
+        .tech-card::before { top: 10px; left: 10px; border-top: 1px solid; border-left: 1px solid; }
+        .tech-card::after { bottom: 10px; right: 10px; border-bottom: 1px solid; border-right: 1px solid; }
+        .tech-card:hover { border-color: rgba(16, 185, 129, 0.3); background: rgba(255, 255, 255, 0.03); transform: translateY(-5px); }
 
         .hero-title {
             background: linear-gradient(135deg, #fff 70%, #10b981 100%);
@@ -177,7 +178,7 @@
             box-shadow: 0 0 40px rgba(16, 185, 129, 0.2);
         }
 
-        /* --- VERTICAL CAROUSEL (RE-INTEGRATED UPWARD MOTION) --- */
+        /* --- VERTICAL CAROUSEL (UPWARD MOTION) --- */
         .carousel-wrapper {
             height: 120px;
             overflow: hidden;
@@ -201,19 +202,81 @@
         .carousel-item.active { opacity: 1; transform: translateX(0); }
         .carousel-item.inactive { opacity: 0.2; transform: translateX(10px); }
 
+        .neon-text {
+            color: var(--neon-green);
+            text-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+        }
+
+        /* Scanline effect for background */
+        .scanline {
+            width: 100%;
+            height: 100px;
+            z-index: 5;
+            background: linear-gradient(0deg, rgba(16, 185, 129, 0) 0%, rgba(16, 185, 129, 0.05) 50%, rgba(16, 185, 129, 0) 100%);
+            opacity: 0.1;
+            position: fixed;
+            bottom: 100%;
+            left: 0;
+            pointer-events: none;
+            animation: scan 8s linear infinite;
+        }
+
+        @keyframes scan {
+            0% { bottom: 100%; }
+            100% { bottom: -100px; }
+        }
+
     </style>
 </head>
 <body class="bg-[#020617] selection:bg-emerald-500/30">
 
+    <div class="scanline"></div>
     <div class="nebula-container" id="nebula-wrap">
         <canvas id="starfield"></canvas>
         <div class="nebula-cloud cloud-1" id="neb-1"></div>
         <div class="nebula-cloud cloud-2" id="neb-2"></div>
     </div>
 
+    <!-- Personnel SOP Modal (Production/Billing Links Integrated) -->
+    <div id="sop-modal" class="modal-overlay">
+        <div class="modal-content glass p-1 rounded-[2.5rem] md:rounded-[3.5rem] border border-emerald-500/30 w-full max-w-xl overflow-hidden">
+            <div class="bg-slate-900/80 p-8 md:p-12 rounded-[2.3rem] md:rounded-[3.3rem] text-center">
+                <div class="flex justify-between items-start mb-10">
+                    <div class="text-left">
+                        <div id="sop-sub-label" class="text-[9px] mono text-emerald-500/60 tracking-[0.5em] mb-2 uppercase font-bold">Operational_SOP_Module</div>
+                        <h2 id="sop-team-title" class="text-3xl font-black uppercase tracking-tight text-white">Production Team</h2>
+                    </div>
+                    <button onclick="closeSOPModal()" class="p-3 glass rounded-full hover:bg-white/10 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-slate-400"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 gap-4 mb-10">
+                    <button id="sop-opening-btn" class="p-6 rounded-2xl glass border border-white/5 hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all text-left flex items-center justify-between group">
+                        <span class="text-xl font-black uppercase tracking-wider text-white">Opening SOP</span>
+                        <div class="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 group-hover:bg-emerald-500/20">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--neon-green)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                        </div>
+                    </button>
+
+                    <button id="sop-closing-btn" class="p-6 rounded-2xl glass border border-white/5 hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all text-left flex items-center justify-between group">
+                        <span class="text-xl font-black uppercase tracking-wider text-white">Closing SOP</span>
+                        <div class="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 group-hover:bg-emerald-500/20">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--neon-green)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                        </div>
+                    </button>
+                </div>
+
+                <div class="pt-6 border-t border-white/5 text-center">
+                    <button onclick="closeSOPModal()" class="mono text-[10px] text-slate-500 uppercase tracking-[0.5em] hover:text-emerald-400 transition-colors">[ Back ]</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Mentors Network Modal -->
     <div id="mentors-modal" class="modal-overlay">
-        <div class="modal-content glass p-1 rounded-[2.5rem] md:rounded-[3.5rem] border border-emerald-500/30 w-full max-w-5xl overflow-hidden">
+        <div class="modal-content glass p-1 rounded-[2.5rem] md:rounded-[3.5rem] border border-emerald-500/30 w-full max-w-5xl overflow-hidden text-nowrap">
             <div class="bg-slate-900/70 p-6 md:p-12 rounded-[2.3rem] md:rounded-[3.3rem]">
                 <div class="flex justify-between items-start mb-10 border-b border-white/5 pb-8">
                     <div>
@@ -243,7 +306,7 @@
 
     <!-- Thematic Experts Modal -->
     <div id="thematic-modal" class="modal-overlay">
-        <div class="modal-content glass p-1 rounded-[2.5rem] md:rounded-[3.5rem] border border-emerald-500/30 w-full max-w-5xl overflow-hidden">
+        <div class="modal-content glass p-1 rounded-[2.5rem] md:rounded-[3.5rem] border border-emerald-500/30 w-full max-w-5xl overflow-hidden text-nowrap">
             <div class="bg-slate-900/80 p-6 md:p-12 rounded-[2.3rem] md:rounded-[3.3rem]">
                 <div class="flex justify-between items-start mb-8 border-b border-white/5 pb-6">
                     <div>
@@ -255,10 +318,7 @@
                     </button>
                 </div>
 
-                <!-- 2 Column Grid with Scroll -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-h-[60vh] overflow-y-auto pr-4 personnel-grid">
-                    
-                    <!-- Aniket Verma -->
                     <div class="glass p-8 rounded-[2rem] border border-white/5 hover:border-emerald-500/20 transition-all text-center group">
                         <div class="mb-6 relative inline-block">
                             <div class="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-emerald-500/20 overflow-hidden profile-img-glow bg-slate-800 mx-auto">
@@ -268,8 +328,6 @@
                         <h3 class="text-2xl font-black text-white uppercase tracking-tight mb-2">Aniket Verma</h3>
                         <div class="text-[10px] mono text-emerald-400 font-bold uppercase tracking-[0.4em]">Operational Thematic</div>
                     </div>
-
-                    <!-- MS Tamang -->
                     <div class="glass p-8 rounded-[2rem] border border-white/5 hover:border-emerald-500/20 transition-all text-center group">
                         <div class="mb-6 relative inline-block">
                             <div class="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-emerald-500/20 overflow-hidden profile-img-glow bg-slate-800 mx-auto">
@@ -279,8 +337,6 @@
                         <h3 class="text-2xl font-black text-white uppercase tracking-tight mb-2">MS Tamang</h3>
                         <div class="text-[10px] mono text-emerald-400 font-bold uppercase tracking-[0.4em]">Guest Management Thematic</div>
                     </div>
-
-                    <!-- Shiraz Solanki -->
                     <div class="glass p-8 rounded-[2rem] border border-white/5 hover:border-emerald-500/20 transition-all text-center group">
                         <div class="mb-6 relative inline-block">
                             <div class="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-emerald-500/20 overflow-hidden profile-img-glow bg-slate-800 mx-auto">
@@ -290,8 +346,6 @@
                         <h3 class="text-2xl font-black text-white uppercase tracking-tight mb-2">Shiraz Solanki</h3>
                         <div class="text-[10px] mono text-emerald-400 font-bold uppercase tracking-[0.4em]">Marketing Thematic</div>
                     </div>
-
-                    <!-- Vishal Raj -->
                     <div class="glass p-8 rounded-[2rem] border border-white/5 hover:border-emerald-500/20 transition-all text-center group">
                         <div class="mb-6 relative inline-block">
                             <div class="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-emerald-500/20 overflow-hidden profile-img-glow bg-slate-800 mx-auto">
@@ -301,8 +355,6 @@
                         <h3 class="text-2xl font-black text-white uppercase tracking-tight mb-2">Vishal Raj</h3>
                         <div class="text-[10px] mono text-emerald-400 font-bold uppercase tracking-[0.4em]">Finance Thematic</div>
                     </div>
-
-                    <!-- Kheman Rai Chelak -->
                     <div class="glass p-8 rounded-[2rem] border border-white/5 hover:border-emerald-500/20 transition-all text-center group">
                         <div class="mb-6 relative inline-block">
                             <div class="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-emerald-500/20 overflow-hidden profile-img-glow bg-slate-800 mx-auto">
@@ -312,8 +364,6 @@
                         <h3 class="text-2xl font-black text-white uppercase tracking-tight mb-2">Kheman Rai Chelak</h3>
                         <div class="text-[10px] mono text-emerald-400 font-bold uppercase tracking-[0.4em]">Social Outreach Thematic</div>
                     </div>
-
-                    <!-- Bappaditya Mahata -->
                     <div class="glass p-8 rounded-[2rem] border border-white/5 hover:border-emerald-500/20 transition-all text-center group">
                         <div class="mb-6 relative inline-block">
                             <div class="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-emerald-500/20 overflow-hidden profile-img-glow bg-slate-800 mx-auto">
@@ -323,8 +373,6 @@
                         <h3 class="text-2xl font-black text-white uppercase tracking-tight mb-2">Bappaditya Mahata</h3>
                         <div class="text-[10px] mono text-emerald-400 font-bold uppercase tracking-[0.4em]">Resource Development Thematic</div>
                     </div>
-
-                    <!-- Ashwajit Ajay Jamgade -->
                     <div class="glass p-8 rounded-[2rem] border border-white/5 hover:border-emerald-500/20 transition-all text-center group">
                         <div class="mb-6 relative inline-block">
                             <div class="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-emerald-500/20 overflow-hidden profile-img-glow bg-slate-800 mx-auto">
@@ -334,8 +382,6 @@
                         <h3 class="text-2xl font-black text-white uppercase tracking-tight mb-2">Ashwajit Ajay Jamgade</h3>
                         <div class="text-[10px] mono text-emerald-400 font-bold uppercase tracking-[0.4em]">Capacity Building Thematic</div>
                     </div>
-
-                    <!-- Muskan Rai -->
                     <div class="glass p-8 rounded-[2rem] border border-white/5 hover:border-emerald-500/20 transition-all text-center group">
                         <div class="mb-6 relative inline-block">
                             <div class="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-emerald-500/20 overflow-hidden profile-img-glow bg-slate-800 mx-auto">
@@ -348,9 +394,7 @@
                 </div>
 
                 <div class="mt-8 text-center pt-4 border-t border-white/5">
-                    <button onclick="closeThematicModal()" class="mono text-[10px] text-slate-500 uppercase tracking-[0.5em] hover:text-emerald-400 transition-colors">
-                        [ Back ]
-                    </button>
+                    <button onclick="closeThematicModal()" class="mono text-[10px] text-slate-500 uppercase tracking-[0.5em] hover:text-emerald-400 transition-colors">[ Back ]</button>
                 </div>
             </div>
         </div>
@@ -371,49 +415,12 @@
                         <img src="https://kudumbashreenro.org/wp-content/uploads/2025/03/kashy.png" alt="Shreyash Kashyap" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700">
                     </div>
                 </div>
-                <div class="mb-10">
+                <div class="mb-10 text-nowrap">
                     <h2 class="text-4xl md:text-5xl font-black uppercase tracking-tight text-white mb-2">Shreyash Kashyap</h2>
                     <div class="text-[10px] md:text-[12px] mono text-emerald-400 font-bold uppercase tracking-[0.6em] mb-3">Assistant Program Manager</div>
                     <div class="h-1 w-24 bg-emerald-500/40 mx-auto rounded-full mt-6"></div>
                 </div>
                 <button onclick="closeProfileModal()" class="mono text-[10px] text-slate-500 uppercase tracking-[0.4em] hover:text-emerald-400 transition-colors">[ Back ]</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- General Sync Protocol Modal -->
-    <div id="protocol-modal" class="modal-overlay">
-        <div id="modal-container" class="modal-content glass p-1 rounded-[2rem] md:rounded-[3rem] border border-emerald-500/30 w-full max-w-2xl overflow-hidden">
-            <div class="bg-slate-900/50 p-6 md:p-10 rounded-[1.8rem] md:rounded-[2.8rem]">
-                <div class="flex justify-between items-start mb-6 md:mb-10">
-                    <div>
-                        <div id="modal-sub-label" class="text-[8px] md:text-[10px] mono text-emerald-500/60 tracking-[0.4em] mb-2 uppercase font-bold text-nowrap">Protocol_Selection_Alpha</div>
-                        <h2 class="text-2xl md:text-4xl font-black uppercase tracking-tight" id="modal-phase-title">The Fresh Start</h2>
-                    </div>
-                    <button onclick="closeModal()" class="p-2 md:p-3 glass rounded-full hover:bg-white/10 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-slate-400"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                    </button>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-8 md:mb-10">
-                    <button class="p-6 md:p-8 rounded-[1.5rem] md:rounded-[2rem] glass border border-white/5 hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all text-left group flex flex-col gap-3 md:gap-4">
-                        <div class="protocol-icon-bg w-10 h-10 bg-emerald-500/10 rounded-xl flex items-center justify-center border border-emerald-500/20 group-hover:scale-110 transition-transform">
-                            <svg class="protocol-icon-1" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-                        </div>
-                        <div>
-                            <div class="text-xl md:text-2xl font-black uppercase tracking-tight check-title-1">Production CHECK</div>
-                            <p class="text-[9px] md:text-[10px] mono text-slate-500 uppercase tracking-widest mt-1 check-desc-1 text-nowrap">Verify kitchen readiness & output specs</p>
-                        </div>
-                    </button>
-                    <button class="p-6 md:p-8 rounded-[1.5rem] md:rounded-[2rem] glass border border-white/5 hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all text-left group flex flex-col gap-3 md:gap-4">
-                        <div class="protocol-icon-bg w-10 h-10 bg-emerald-500/10 rounded-xl flex items-center justify-center border border-emerald-500/20 group-hover:scale-110 transition-transform">
-                            <svg class="protocol-icon-2" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
-                        </div>
-                        <div>
-                            <div class="text-xl md:text-2xl font-black uppercase tracking-tight check-title-2">Stall CHECK</div>
-                            <p class="text-[9px] md:text-[10px] mono text-slate-500 uppercase tracking-widest mt-1 check-desc-2 text-nowrap">Audit individual vendor modules</p>
-                        </div>
-                    </button>
-                </div>
             </div>
         </div>
     </div>
@@ -434,14 +441,13 @@
 
             <div class="flex items-center gap-2 md:gap-8">
                 <div class="hidden md:flex items-center gap-6 border-r border-white/10 pr-8">
-                    <div class="flex items-center gap-2">
+                    <div class="flex items-center gap-2 text-nowrap">
                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_#10b981]"></span>
                         <span class="text-[9px] mono text-emerald-400 font-bold uppercase tracking-widest">System_Live</span>
                     </div>
-                    <div class="text-[10px] mono text-slate-500 tracking-widest opacity-80 uppercase">28.4595° N, 77.0266° E</div>
+                    <div class="text-[10px] mono text-slate-500 tracking-widest opacity-80 uppercase text-nowrap">28.4686° N, 77.0607° E</div>
                 </div>
 
-                <!-- OUR TEAM DROPDOWN -->
                 <div class="relative">
                     <button id="team-btn" onclick="toggleTeamMenu()" class="flex items-center gap-2 mono text-[9px] md:text-[11px] text-emerald-400 font-bold uppercase tracking-[0.2em] hover:text-white transition-colors py-2 px-5 rounded-full border border-emerald-500/20 hover:bg-emerald-500/10 whitespace-nowrap">
                         Our Team <svg id="team-arrow" class="transition-transform duration-300" xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
@@ -458,8 +464,8 @@
                                     <svg id="prof-arrow" class="transition-transform duration-300" xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
                                 </button>
                                 <div id="prof-submenu" class="sub-menu bg-emerald-500/5 rounded-xl mt-1">
-                                    <button onclick="openProfileModal(event)" class="w-full text-left block p-3 pl-8 mono text-[9px] text-slate-400 hover:text-emerald-400 uppercase tracking-widest">Team Lead</button>
-                                    <button onclick="openThematicModal(event)" class="w-full text-left block p-3 pl-8 mono text-[9px] text-slate-400 hover:text-emerald-400 uppercase tracking-widest border-t border-white/5">Thematic Experts</button>
+                                    <button onclick="openProfileModal(event)" class="w-full text-left block p-3 pl-8 mono text-[9px] text-slate-400 hover:text-emerald-400 uppercase tracking-widest leading-relaxed">Team Lead</button>
+                                    <button onclick="openThematicModal(event)" class="w-full text-left block p-3 pl-8 mono text-[9px] text-slate-400 hover:text-emerald-400 uppercase tracking-widest border-t border-white/5 leading-relaxed">Thematic Experts</button>
                                 </div>
                             </div>
                         </div>
@@ -469,15 +475,15 @@
         </div>
     </nav>
 
-    <main class="relative pt-32 md:pt-48 pb-20 md:pb-32 px-4 md:px-6 z-10">
+    <main class="relative pt-32 md:pt-48 pb-12 md:pb-16 px-4 md:px-6 z-10">
         <div class="max-w-7xl mx-auto">
             <!-- Hero Grid -->
-            <div class="grid grid-cols-1 lg:grid-cols-[70%_30%] gap-8 items-start mb-12 md:mb-16">
+            <div class="grid grid-cols-1 lg:grid-cols-[70%_30%] gap-8 items-start mb-8 md:mb-12">
                 <div class="text-center lg:text-left">
                     <h1 class="hero-title text-4xl sm:text-6xl md:text-8xl xl:text-9xl font-black tracking-tighter leading-[1.1] mb-2 uppercase break-words">Operational <br/><span class="text-slate-200">Framework</span></h1>
-                    <p class="text-sm sm:text-lg md:text-xl text-slate-400 mb-10 leading-relaxed font-light tracking-widest uppercase mt-4">Initiating <span class="text-white font-bold">IFC GURUGRAM 2026</span> Standard Protocol</p>
+                    <p class="text-sm sm:text-lg md:text-xl text-slate-400 mb-8 leading-relaxed font-light tracking-widest uppercase mt-4">Initiating <span class="text-white font-bold">IFC GURUGRAM 2026</span> Standard Protocol</p>
                 </div>
-                <div class="relative group mt-0 lg:mt-10 overflow-hidden">
+                <div class="relative group mt-0 lg:mt-10 overflow-hidden text-nowrap">
                     <div class="carousel-wrapper" id="carousel-wrap">
                         <div class="carousel-container" id="dash-carousel">
                             <div class="carousel-item p-4 text-left flex flex-col justify-center border-l-2 border-emerald-500/40 pl-6">
@@ -487,22 +493,22 @@
                             </div>
                             <div class="carousel-item p-4 text-left flex flex-col justify-center border-l-2 border-white/10 pl-6">
                                 <div class="text-[8px] mono text-slate-500 font-bold uppercase tracking-[0.4em] mb-1">PHASE</div>
-                                <div class="text-2xl md:text-3xl font-black text-white uppercase">2026</div>
+                                <div class="text-2xl md:text-3xl font-black text-white uppercase text-nowrap">2026</div>
                                 <div class="text-[9px] text-emerald-400 mono font-bold tracking-widest uppercase">▲ Active</div>
                             </div>
                             <div class="carousel-item p-4 text-left flex flex-col justify-center border-l-2 border-white/10 pl-6">
                                 <div class="text-[8px] mono text-slate-500 font-bold uppercase tracking-[0.4em] mb-1">HUB</div>
-                                <div class="text-2xl md:text-3xl font-black text-white uppercase">GGM_05</div>
+                                <div class="text-2xl md:text-3xl font-black text-white uppercase text-nowrap">GGM_05</div>
                                 <div class="text-[9px] text-emerald-400 mono font-bold tracking-widest uppercase">▲ Linked</div>
                             </div>
                             <div class="carousel-item p-4 text-left flex flex-col justify-center border-l-2 border-white/10 pl-6">
                                 <div class="text-[8px] mono text-slate-500 font-bold uppercase tracking-[0.4em] mb-1">MENTORS</div>
-                                <div class="text-2xl md:text-3xl font-black text-white uppercase">39</div>
+                                <div class="text-2xl md:text-3xl font-black text-white uppercase text-nowrap">39</div>
                                 <div class="text-[9px] text-emerald-400 mono font-bold tracking-widest uppercase">▲ Verified</div>
                             </div>
                             <div class="carousel-item p-4 text-left flex flex-col justify-center border-l-2 border-white/10 pl-6">
                                 <div class="text-[8px] mono text-slate-500 font-bold uppercase tracking-[0.4em] mb-1">CORE</div>
-                                <div class="text-2xl md:text-3xl font-black text-white uppercase">08</div>
+                                <div class="text-2xl md:text-3xl font-black text-white uppercase text-nowrap">08</div>
                                 <div class="text-[9px] text-amber-500 mono font-bold tracking-widest uppercase">▲ Critical</div>
                             </div>
                         </div>
@@ -510,14 +516,16 @@
                 </div>
             </div>
 
-            <div class="flex justify-center mb-24 md:mb-32">
+            <!-- ACTION BUTTON -->
+            <div class="flex justify-center mb-16 md:mb-24 text-nowrap">
                 <button id="initiate-btn" class="group relative px-12 md:px-16 py-5 md:py-6 bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-bold rounded-full transition-all duration-300 shadow-2xl shadow-emerald-900/40 overflow-hidden min-w-[200px]">
                     <span class="relative z-10 uppercase tracking-[0.2em] text-sm md:text-base">Initiate SOP</span>
                     <div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
                 </button>
             </div>
 
-            <div id="sync-hub" class="max-w-7xl mx-auto mb-24 md:mb-32">
+            <!-- SYNC HUB -->
+            <div id="sync-hub" class="max-w-7xl mx-auto mb-12 md:mb-16">
                 <div class="glass rounded-[2rem] md:rounded-[2.5rem] border border-white/10 p-1 md:p-2 relative tech-card">
                     <div class="flex items-center justify-between px-6 md:px-8 py-4 border-b border-white/5">
                         <div class="flex items-center gap-3">
@@ -528,50 +536,122 @@
                     </div>
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-1.5 md:gap-2 p-3 md:p-4">
                         <button onclick="switchTab(0)" class="tab-btn active p-3 md:p-6 rounded-2xl md:rounded-3xl glass border border-white/5 flex flex-col items-center gap-1 group">
-                            <span class="text-xs md:text-xl font-black tracking-tight uppercase leading-tight text-center">Fresh Start</span>
+                            <span class="text-xs md:text-xl font-black tracking-tight uppercase leading-tight text-center text-nowrap">Fresh Start</span>
                         </button>
                         <button onclick="switchTab(1)" class="tab-btn p-3 md:p-6 rounded-2xl md:rounded-3xl glass border border-white/5 flex flex-col items-center gap-1 group">
-                            <span class="text-xs md:text-xl font-black tracking-tight uppercase leading-tight text-center">Peak Hour</span>
+                            <span class="text-xs md:text-xl font-black tracking-tight uppercase leading-tight text-center text-nowrap">Peak Hour</span>
                         </button>
                         <button onclick="switchTab(2)" class="tab-btn p-3 md:p-6 rounded-2xl md:rounded-3xl glass border border-white/5 flex flex-col items-center gap-1 group">
-                            <span class="text-xs md:text-xl font-black tracking-tight uppercase leading-tight text-center">Closing</span>
+                            <span class="text-xs md:text-xl font-black tracking-tight uppercase leading-tight text-center text-nowrap">Closing</span>
                         </button>
                         <button onclick="switchTab(3)" class="tab-btn p-3 md:p-6 rounded-2xl md:rounded-3xl glass border border-white/5 flex flex-col items-center gap-1 group">
-                            <span class="text-xs md:text-xl font-black tracking-tight uppercase leading-tight text-center">Feedback</span>
+                            <span class="text-xs md:text-xl font-black tracking-tight uppercase leading-tight text-center text-nowrap">Feedback</span>
                         </button>
                     </div>
                     <div class="p-6 md:p-12 text-center" id="sync-content">
                         <div class="max-w-md mx-auto">
                             <h3 class="text-2xl md:text-4xl font-black mb-2 uppercase" id="sync-title">The Fresh Start</h3>
                             <p class="text-[10px] md:text-sm text-slate-500 tracking-widest uppercase mb-8" id="sync-desc">Validation required for 12:00 PM Cycle</p>
-                            <button onclick="handleExecuteSync()" id="execute-btn" class="px-10 py-4 rounded-full border border-emerald-500/30 bg-emerald-500/5 hover:bg-emerald-500/20 text-emerald-400 font-bold mono text-[10px] md:text-xs tracking-widest transition-all uppercase">Execute Sync</button>
+                            <button onclick="handleExecuteSync()" id="execute-btn" class="px-10 py-4 rounded-full border border-emerald-500/30 bg-emerald-500/5 hover:bg-emerald-500/20 text-emerald-400 font-bold mono text-[10px] md:text-xs tracking-widest transition-all uppercase active:scale-95 text-nowrap">Execute Sync</button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div id="team-nodes" class="max-w-7xl mx-auto mt-24 md:mt-44 scroll-mt-24 pb-20">
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-                    <div class="p-8 md:p-10 rounded-[2rem] glass tech-card team-card">
-                        <div class="text-[8px] md:text-[9px] text-emerald-500/50 mono mb-6 tracking-[0.4em] uppercase font-bold">NODE_PR_01</div>
-                        <h3 class="text-xl md:text-2xl font-black mb-6 tracking-tight uppercase">PRODUCTION TEAM</h3>
+            <!-- OPERATIONAL HUB SEPARATOR -->
+            <div id="operational-hub-trigger" class="max-w-7xl mx-auto mb-10 md:mb-12 scroll-mt-32">
+                <div class="flex items-center gap-10">
+                    <div class="h-px flex-grow bg-gradient-to-r from-transparent via-emerald-500/40 to-transparent"></div>
+                    <div class="text-center">
+                        <div class="text-[8px] mono text-emerald-500/50 tracking-[0.6em] mb-3 uppercase font-bold text-nowrap">Tactical_Grid_Alpha</div>
+                        <h2 class="mono text-xs md:text-sm text-slate-300 tracking-[1.2em] md:tracking-[1.5em] uppercase font-black whitespace-nowrap">Operational Hub</h2>
                     </div>
-                    <div class="p-8 md:p-10 rounded-[2rem] glass tech-card team-card">
-                        <div class="text-[8px] md:text-[9px] text-slate-500 mono mb-6 tracking-[0.4em] uppercase font-bold">NODE_BI_02</div>
-                        <h3 class="text-xl md:text-2xl font-black mb-6 tracking-tight uppercase">BILLING TEAM</h3>
+                    <div class="h-px flex-grow bg-gradient-to-r from-transparent via-emerald-500/40 to-transparent"></div>
+                </div>
+            </div>
+
+            <!-- TEAM NODES -->
+            <div id="team-nodes" class="max-w-7xl mx-auto pb-8 md:pb-12">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 text-nowrap">
+                    
+                    <!-- Production Team (Interactive SOP Links) -->
+                    <div onclick="openSOPModal('Production', 'https://forms.gle/6o79jj6vVXP4v4Du6', 'https://forms.gle/51et6ZDj7t2EpnGWA')" class="p-10 rounded-[2.5rem] glass tech-card team-card">
+                        <div class="text-[8px] md:text-[9px] text-emerald-500/50 mono mb-8 tracking-[0.4em] uppercase font-bold border-b border-white/5 pb-4 flex justify-between items-center">
+                            <span>NODE_PR_01</span>
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_10px_#10b981]"></span>
+                        </div>
+                        <h3 class="text-xl md:text-3xl font-black mb-6 tracking-tight uppercase leading-tight">PRODUCTION<br/>TEAM</h3>
+                        <div class="flex items-center gap-4"><span class="mono text-[9px] md:text-[10px] text-emerald-400 uppercase font-bold tracking-widest">[ SOP_Access ]</span></div>
                     </div>
-                    <div class="p-8 md:p-10 rounded-[2rem] glass tech-card team-card">
-                        <div class="text-[8px] md:text-[9px] text-slate-500 mono mb-6 tracking-[0.4em] uppercase font-bold">NODE_GS_06</div>
-                        <h3 class="text-xl md:text-2xl font-black mb-6 tracking-tight uppercase break-words">GUEST MGMT</h3>
+
+                    <!-- Billing Team (Interactive SOP Links) -->
+                    <div onclick="openSOPModal('Billing', 'https://forms.gle/CotoRaZx6ufPEDeB9', 'https://forms.gle/LhCNE5yEnrVREM2d7')" class="p-10 rounded-[2.5rem] glass tech-card team-card">
+                        <div class="text-[8px] md:text-[9px] text-slate-500 mono mb-8 tracking-[0.4em] uppercase font-bold border-b border-white/5 pb-4 flex justify-between items-center">
+                            <span>NODE_BI_02</span>
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500/30"></span>
+                        </div>
+                        <h3 class="text-xl md:text-3xl font-black mb-6 tracking-tight uppercase leading-tight text-ellipsis overflow-hidden">BILLING<br/>TEAM</h3>
+                        <div class="flex items-center gap-4"><span class="mono text-[9px] md:text-[10px] text-emerald-400 uppercase font-bold tracking-widest">[ SOP_Access ]</span></div>
+                    </div>
+
+                    <!-- Guest Management Team (Direct Link) -->
+                    <div onclick="window.open('https://forms.gle/SzAfNf4ucGiBgFtw6', '_blank')" class="p-10 rounded-[2.5rem] glass tech-card team-card">
+                        <div class="text-[8px] md:text-[9px] text-slate-500 mono mb-8 tracking-[0.4em] uppercase font-bold border-b border-white/5 pb-4 flex justify-between items-center">
+                            <span>NODE_GS_03</span>
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_10px_#10b981]"></span>
+                        </div>
+                        <h3 class="text-xl md:text-3xl font-black mb-6 tracking-tight uppercase leading-tight text-ellipsis overflow-hidden">GUEST<br/>MGMT</h3>
+                        <div class="flex items-center gap-4"><span class="mono text-[9px] md:text-[10px] text-emerald-400 uppercase font-bold tracking-widest">[ Access_Direct ]</span></div>
+                    </div>
+
+                    <!-- Floor Team (Direct Link) -->
+                    <div onclick="window.open('https://forms.gle/edGN5iKQcqteymq76', '_blank')" class="p-10 rounded-[2.5rem] glass tech-card team-card">
+                        <div class="text-[8px] md:text-[9px] text-slate-500 mono mb-8 tracking-[0.4em] uppercase font-bold border-b border-white/5 pb-4 flex justify-between items-center">
+                            <span>NODE_FL_04</span>
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500/60 animate-pulse"></span>
+                        </div>
+                        <h3 class="text-xl md:text-3xl font-black mb-6 tracking-tight uppercase leading-tight">FLOOR<br/>TEAM</h3>
+                        <div class="flex items-center gap-4"><span class="mono text-[9px] md:text-[10px] text-emerald-400 uppercase font-bold tracking-widest">[ Access_Direct ]</span></div>
+                    </div>
+
+                    <!-- Gas Management Team (Direct Link) -->
+                    <div onclick="window.open('https://forms.gle/z5NwFAgQqWvJKFRw7', '_blank')" class="p-10 rounded-[2.5rem] glass tech-card team-card">
+                        <div class="text-[8px] md:text-[9px] text-slate-500 mono mb-8 tracking-[0.4em] uppercase font-bold border-b border-white/5 pb-4 flex justify-between items-center">
+                            <span>NODE_GM_05</span>
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500/80"></span>
+                        </div>
+                        <h3 class="text-xl md:text-3xl font-black mb-6 tracking-tight uppercase leading-tight text-nowrap">GAS MGMT<br/>TEAM</h3>
+                        <div class="flex items-center gap-4"><span class="mono text-[9px] md:text-[10px] text-emerald-400 uppercase font-bold tracking-widest">[ Access_Direct ]</span></div>
                     </div>
                 </div>
             </div>
         </div>
     </main>
 
-    <footer class="relative py-12 md:py-16 text-center border-t border-white/5 z-10 overflow-hidden bg-black/20">
-        <p class="text-white text-base md:text-lg font-black tracking-[0.4em] uppercase">India Food Court</p>
-        <p class="text-emerald-500/60 text-[8px] md:text-[10px] mono uppercase tracking-[0.8em]">Aniket Verma // 2026</p>
+    <!-- FOOTER (Original restored) -->
+    <footer class="relative py-12 text-center border-t border-white/5 z-10 overflow-hidden bg-black/20 text-nowrap">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col items-center gap-6">
+            <div class="flex items-center gap-12 opacity-50 scale-90 md:scale-100">
+                <div class="flex flex-col items-center">
+                    <span class="text-[8px] mono uppercase tracking-[0.4em] mb-1 text-slate-400">Project_Status</span>
+                    <span class="text-[10px] mono text-emerald-400 font-bold uppercase">Mission_Critical</span>
+                </div>
+                <div class="w-px h-8 bg-white/10"></div>
+                <div class="flex flex-col items-center">
+                    <span class="text-[8px] mono uppercase tracking-[0.4em] mb-1 text-slate-400">Version</span>
+                    <span class="text-[10px] mono text-white font-bold uppercase">v2.0.26_Stable</span>
+                </div>
+            </div>
+            <div class="flex flex-col gap-2 text-center">
+                <p class="text-white text-lg font-black tracking-[0.5em] uppercase">India Food Court</p>
+                <div class="flex items-center justify-center gap-4">
+                    <span class="h-px w-8 bg-emerald-500/40"></span>
+                    <p class="text-emerald-500/60 text-[10px] mono uppercase tracking-[0.8em]">Architect: Aniket Verma</p>
+                    <span class="h-px w-8 bg-emerald-500/40"></span>
+                </div>
+            </div>
+            <p class="text-slate-600 text-[9px] mono uppercase tracking-[1.2em] opacity-40">Gurugram // Phase_Trial_Run // 2026</p>
+        </div>
     </footer>
 
     <script>
@@ -579,8 +659,9 @@
             const canvas = document.getElementById('starfield');
             if (!canvas) return;
             const ctx = canvas.getContext('2d');
-            const teamNodesSection = document.getElementById('team-nodes');
+            const teamNodesSection = document.getElementById('operational-hub-trigger');
             const modal = document.getElementById('protocol-modal');
+            const sopModal = document.getElementById('sop-modal');
             const profileModal = document.getElementById('profile-modal');
             const mentorsModal = document.getElementById('mentors-modal');
             const thematicModal = document.getElementById('thematic-modal');
@@ -592,6 +673,24 @@
             const soundBtn = document.getElementById('sound-btn');
             const initiateBtn = document.getElementById('initiate-btn');
             const hudTime = document.getElementById('current-time-hud');
+
+            // --- SOP MODAL LOGIC WITH LINKS ---
+            window.openSOPModal = function(team, openLink, closeLink) {
+                const title = document.getElementById('sop-team-title');
+                const openBtn = document.getElementById('sop-opening-btn');
+                const closeBtn = document.getElementById('sop-closing-btn');
+                
+                if(title) title.innerText = team + " Team";
+                
+                if(openBtn) openBtn.onclick = (e) => { e.stopPropagation(); window.open(openLink, '_blank'); };
+                if(closeBtn) closeBtn.onclick = (e) => { e.stopPropagation(); window.open(closeLink, '_blank'); };
+                
+                if(sopModal) sopModal.classList.add('active');
+            };
+
+            window.closeSOPModal = function() {
+                if(sopModal) sopModal.classList.remove('active');
+            };
 
             // --- MENU FUNCTIONS ---
             window.toggleTeamMenu = function() {
@@ -623,6 +722,7 @@
                 if (!e.target.closest('#team-dropdown') && !e.target.closest('#team-btn') && !e.target.closest('.modal-content')) {
                     if (teamDropdown) teamDropdown.classList.remove('active');
                     if (profSubmenu) profSubmenu.classList.remove('active');
+                    if (teamArrow) teamArrow.style.transform = 'rotate(0deg)';
                 }
             });
 
@@ -646,13 +746,9 @@
                 if (descEl) descEl.innerText = syncData[index].desc;
             };
 
-            window.handleExecuteSync = function() {
-                if (currentActiveTabIndex < 2 && modal) modal.classList.add('active');
-            };
+            window.handleExecuteSync = function() { if (currentActiveTabIndex < 2 && modal) modal.classList.add('active'); };
 
-            function updateHUDTime() {
-                if (hudTime) hudTime.innerText = new Date().toLocaleTimeString('en-GB', { hour12: false });
-            }
+            function updateHUDTime() { if (hudTime) hudTime.innerText = new Date().toLocaleTimeString('en-GB', { hour12: false }); }
             setInterval(updateHUDTime, 1000); updateHUDTime();
 
             const audio = new Audio('https://assets.mixkit.co/music/preview/mixkit-indian-percussion-rhythm-loop-302.mp3');
@@ -673,7 +769,6 @@
                 });
             }
 
-            // --- CAROUSEL LOGIC ---
             let currentIdx = 0;
             const carousel = document.getElementById('dash-carousel');
             function updateCarousel() {
@@ -687,7 +782,6 @@
             setInterval(() => { currentIdx = (currentIdx + 1) % 5; updateCarousel(); }, 4000);
             updateCarousel();
 
-            // --- STARFIELD ---
             let width, height, stars = []; const starCount = 150;
             class Star {
                 constructor() { this.reset(); }
